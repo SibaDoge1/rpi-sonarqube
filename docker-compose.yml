@@ -1,13 +1,14 @@
 postgresql:
-  image: tobi312/rpi-postgresql:9.4
+  image: tobi312/rpi-postgresql-postgis:latest
   environment:
     - POSTGRES_USER=sonar
     - POSTGRES_PASSWORD=xaexohquaetiesoo
     - POSTGRES_DB=sonar
   volumes:
-    - /media/usbraid/docker/sonarqube:/var/lib/postgresql/data
+    - /opt/postgresql:/var/lib/postgresql/data
   ports:
     - "5432:5432"
+#  user: "1000"
 sonarqube:
   image: paperinik/rpi-sonarqube:latest
 #  build: ./
@@ -15,9 +16,17 @@ sonarqube:
   links:
     - postgresql:db
   environment:
+#    - ES_JAVA_OPTS="-Djna.tmpdir=/var/lib/elasticsearch/tmp"
     - DB_USER=sonar
     - DB_PASS=xaexohquaetiesoo
     - DB_NAME=sonar
+  volumes:
+    - /opt/sonarqube/extensions:/sonarqube-7.6/extensions
+#   - /media/usbraid/docker/sonar-scanner/conf:/sonarqube-7.6/conf
+    - /opt/sonarqube/logs:/sonarqube-7.6/logs
+    - /opt/sonarqube/data:/sonarqube-7.6/data
+    - /opt/sonarqube/temp:/sonarqube-7.6/temp
   ports:
     - "9408:9000"
     - "443"
+#  user: "1001"
